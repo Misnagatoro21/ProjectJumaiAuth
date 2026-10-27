@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectJumaiAuth.Data;
 using ProjectJumaiAuth.DTOS;
 using ProjectJumaiAuth.Models;
 using ProjectJumaiAuth.Repository;
-using ProyectJumaiAuth.Data;
 
-namespace proyectoJumAuth.Repository
+namespace ProjectJumaiAuth.Repository
 {
-
-    public class CursoRepository(AppDbcontext context) : ICursoRepository
+    public class CursoRepository(AppDbContext context) : ICursoRepository
     {
         public async Task<Curso> CreateAsync(Curso curso)
         {
@@ -80,7 +79,7 @@ namespace proyectoJumAuth.Repository
             }
 
             var data = await query
-     .Select(c => new ProyectoJumaiAuth.DTOS.CursoTableDto
+     .Select(c => new ProjectJumaiAuth.DTOS.CursoTableDto
      {
          Id = c.Id,
          Nombre = c.Nombre,
@@ -89,7 +88,7 @@ namespace proyectoJumAuth.Repository
      })
      .ToListAsync();
 
-            return new ProyectoJumaiAuth.DTOS.DataTableResponseDto<ProyectoJumaiAuth.DTOS.CursoTableDto>
+            return new ProjectJumaiAuth.DTOS.DataTableResponseDto<ProjectJumaiAuth.DTOS.CursoTableDto>
             {
                 Draw = request.Draw,
                 RecordsTotal = recordsTotal,
@@ -98,10 +97,7 @@ namespace proyectoJumAuth.Repository
             };
         }
 
-        public async Task<bool> HasAnyEstudentAsync(int Id)
-        {
-            return await context.Estudiantes.AnyAsync(e => e.CursoId == Id);
-        }
+  
 
         public async Task<bool> NombreExisteAsync(string nombre, int? excludeId = null)
         {

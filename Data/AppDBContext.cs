@@ -1,38 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectJumaiAuth.Models;
-using ProjectJumaiAuth.Models.ProjectJumaiAuth.Models;
 
 namespace ProjectJumaiAuth.Data
 {
-    public static class DbSeeder
+    public class AppDbContext : DbContext
     {
-        public static async Task SeedAsync(AppDbContext context)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        public DbSet<Usuario> Usuarios => Set<Usuario>();
+        public DbSet<Tarea> Tareas => Set<Tarea>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<Permiso> Permisos => Set<Permiso>();
+        public DbSet<RolePermiso> RolePermissions => Set<RolePermiso>();
+        public DbSet<UsuarioPermiso> UsuarioPermisos => Set<UsuarioPermiso>();
+        public DbSet<Curso> Cursos => Set<Curso>();
+        public DbSet<Estudiante> Estudiantes => Set<Estudiante>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            if (await context.Usuarios.AnyAsync())
-                return;
+            base.OnModelCreating(modelBuilder);
 
-            var admin = new Usuario
-            {
-                NombreUsuario = "admin",
-                Email = "admin@correo.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
-                Rol = "Admin"
-            };
-            var usuario = new Usuario
-            {
-                NombreUsuario = "usuario",
-                Email = "usuario@correo.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Usuario123!"),
-                Rol = "Usuario"
-            };
+            modelBuilder.Entity<RolePermiso>()
+                .HasKey(rp => new { rp.RoleId, rp.PermisoId });
 
-            context.Usuarios.AddRange(admin, usuario);
-            await context.SaveChangesAsync();
+            modelBuilder.Entity<UsuarioPermiso>()
+                .HasKey(up => new { up.UsuarioId, up.PermisoId });
 
-            context.Tareas.AddRange(
-                new Tarea { Titulo = "Probar el login", UsuarioId = usuario.Id },
-                new Tarea { Titulo = "Revisar el token JWT", UsuarioId = admin.Id });
-            await context.SaveChangesAsync();
+            modelBuilder.Entity<Estudiante>()
+                .HasOne(e => e.Curso)
+                .WithMany(c => c.Estudiantes)
+                .HasForeignKey(e => e.CursoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

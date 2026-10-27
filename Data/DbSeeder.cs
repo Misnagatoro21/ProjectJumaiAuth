@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectJumaiAuth.Models;
-using ProjectJumaiAuth.Models.ProjectJumaiAuth.Models;
+
 
 namespace ProjectJumaiAuth.Data
 {
@@ -8,31 +8,28 @@ namespace ProjectJumaiAuth.Data
     {
         public static async Task SeedAsync(AppDbContext context)
         {
-            if (await context.Usuarios.AnyAsync())
-                return;
+            if (await context.Usuarios.AnyAsync()) return;
+
+            var rolAdmin = new Role { Nombre = "Admin" };
+            var rolUsuario = new Role { Nombre = "Usuario" };
+            context.Roles.AddRange(rolAdmin, rolUsuario);
+            await context.SaveChangesAsync();
 
             var admin = new Usuario
             {
                 NombreUsuario = "admin",
                 Email = "admin@correo.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
-                Rol = "Admin"
+                PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword("Admin123!"),
+                RolId = rolAdmin.Id
             };
             var usuario = new Usuario
             {
                 NombreUsuario = "usuario",
                 Email = "usuario@correo.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Usuario123!"),
-                Rol = "Usuario"
+                PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword("Usuario123!"),
+                RolId = rolUsuario.Id
             };
-
-            context.Usuarios.AddRange(admin, usuario);
-            await context.SaveChangesAsync();
-
-            context.Tareas.AddRange(
-                new Tarea { Titulo = "Probar el login", UsuarioId = usuario.Id },
-                new Tarea { Titulo = "Revisar el token JWT", UsuarioId = admin.Id });
-            await context.SaveChangesAsync();
+            
         }
     }
 }

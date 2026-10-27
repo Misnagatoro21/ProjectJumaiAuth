@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,8 @@ using ProjectJumaiAuth.Models;
 
 namespace ProjectJumaiAuth.Controllers
 {
+    public record CrearTareaDto([Required, StringLength(200)] string Titulo);
+
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
@@ -19,22 +22,32 @@ namespace ProjectJumaiAuth.Controllers
             _db = db;
         }
 
-        private int UsuarioId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        private bool TryGetUsuarioId(out int usuarioId)
+        {
+            var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(claim, out usuarioId);
+        }
 
         [HttpGet]
         public async Task<IActionResult> MisTareas()
         {
+            if (!TryGetUsuarioId(out var usuarioId))
+                return Unauthorized();
+
             var tareas = await _db.Tareas
-                .Where(t => t.UsuarioId == UsuarioId)
+                .Where(t => t.UsuarioId == usuarioId)
                 .Select(t => new { t.Id, t.Titulo, t.Completada })
                 .ToListAsync();
             return Ok(tareas);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(Tarea dto)
+        public async Task<IActionResult> Crear([FromBody] CrearTareaDto dto)
         {
-            var tarea = new Tarea { Titulo = dto.Titulo, UsuarioId = UsuarioId };
+            if (!TryGetUsuarioId(out var usuarioId))
+                return Unauthorized();
+
+            var tarea = new Tarea { Titulo = dto.Titulo, UsuarioId = usuarioId };
             _db.Tareas.Add(tarea);
             await _db.SaveChangesAsync();
             return Ok(new { tarea.Id, tarea.Titulo, tarea.Completada });

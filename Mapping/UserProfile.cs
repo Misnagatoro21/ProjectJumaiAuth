@@ -4,7 +4,7 @@ using ProjectJumaiAuth.Models;
 
 namespace ProjectJumaiAuth.Mapping
 {
-    public class UserProfile
+    public class UserProfile : Profile
     {
         public UserProfile()
         {
@@ -14,13 +14,11 @@ namespace ProjectJumaiAuth.Mapping
                 .ForMember(d => d.ExpiresAt, opt => opt.Ignore());
 
             CreateMap<RegisterRequestDto, Usuario>()
-                .ForMember(d => d.Password, opt => opt.Ignore())
-                .ForMember(d => d.EmailConfirmed, opt => opt.MapFrom(src => false))
-                .ForMember(d => d.EmailConfirmToken, opt => opt.Ignore())
+                .ForMember(d => d.PasswordHash, opt => opt.Ignore())
                 .ForMember(d => d.RefreshToken, opt => opt.Ignore())
-                .ForMember(d => d.RefreshTokenExpiryTime, opt => opt.Ignore())
-                .ForMember(d => d.PasswordResetToken, opt => opt.Ignore())
-                .ForMember(d => d.Role, opt => opt.Ignore());
+                .ForMember(d => d.RefreshTokenExpiry, opt => opt.Ignore())
+                .ForMember(d => d.Rol, opt => opt.Ignore())
+                .ForMember(d => d.RolId, opt => opt.Ignore());
         }
     }
 }
