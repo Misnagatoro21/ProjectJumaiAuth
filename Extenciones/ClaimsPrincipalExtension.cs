@@ -2,26 +2,23 @@
 
 namespace ProjectJumaiAuth.Extenciones
 {
-    public class ClaimsPrincipalExtension
+    public static class ClaimsPrincipalExtensions
     {
         public const string PermissionClaimType = "Permiso";
 
-
-
         public static bool TienePermiso(this ClaimsPrincipal user, string permiso)
         {
-            return user.Claims.Any(c => c.Type == PermissionClaimType &&
-            string.Equals(c.Value, permiso, StringComparison.OrdinalIgnoreCase));
+            return user.Claims.Any(c =>
+                c.Type == PermissionClaimType &&
+                string.Equals(c.Value, permiso, StringComparison.OrdinalIgnoreCase));
         }
 
-
-        public static bool TienePermiso(this ClaimsPrincipal user, params string[] permiso)
+        public static bool TieneAlgunPermiso(this ClaimsPrincipal user, params string[] permisos)
         {
-            return permiso.Any(user.TienePermiso);
+            return permisos.Any(p => user.TienePermiso(p));
         }
 
-
-        public static IReadOnlyList<string> Getpermiso(this ClaimsPrincipal user)
+        public static IReadOnlyList<string> GetPermisos(this ClaimsPrincipal user)
         {
             return user.Claims
                 .Where(c => c.Type == PermissionClaimType)
@@ -29,5 +26,5 @@ namespace ProjectJumaiAuth.Extenciones
                 .OrderBy(p => p)
                 .ToList();
         }
-}
+    }
 }

@@ -1,4 +1,4 @@
-﻿using ProjectJumaiAuth.Models.ProjectJumaiAuth.Models;
+﻿using ProjectJumaiAuth.Models;
 
 namespace ProjectJumaiAuth.Models
 {
