@@ -7,14 +7,11 @@ using ProjectJumaiAuth.Servicces;
 namespace ProjectJumaiAuth.Services
 {
     public class RolePermissionService(
-        IRoleRepository roleRepo,
-        IPermissionRepository permissionRepo,
-        IUsuarioRepository userRepo) : IRolPermissionService
+        IRoleRepository roleRepo, IPermissionRepository permissionRepo, IUsuarioRepository userRepo) : IRolPermissionServices   
     {
-        // ---------- Asignaciones ----------
+        private int roledId;
 
-        // Interfaz: AssignPermissionsToRoleAsync(int, int)
-        public async Task<(bool Success, string? ErrorMessage)> AssignPermissionsToRoleAsync(int roleId, int permissionId)
+        public async Task<(bool Success, string? ErrorMessage)> AssignPermissionsToRoleAsync(Guid roleId, int permissionId)
         {
             var role = await roleRepo.GetByIdWithPermissionsAsync(roleId);
             if (role == null)
@@ -24,15 +21,15 @@ namespace ProjectJumaiAuth.Services
             if (permission == null)
                 return (false, "Permiso no encontrado");
 
-            var assigned = await roleRepo.AssingPermissionToRoleAsync(roleId, permissionId);
+            var assigned = await roleRepo.AssingPermissionToRoleAsync(permissionId, roledId);
             if (!assigned)
                 return (false, "El permiso ya está asignado al rol");
 
             return (true, null);
         }
 
-        // Interfaz: AssignPermissionsToUserAsync(int, AssingUserPermission)
-        public async Task<(bool Success, string? ErrorMessage)> AssignPermissionsToUserAsync(int userId, AssingUserPermission dto)
+ 
+        public async Task<(bool Success, string? ErrorMessage)> AssignPermissionsToUserAsync(string userId, AssingUserPermission dto)
         {
             var user = await userRepo.GetUsuarioByIdWithPermissionAsync(userId);
             if (user == null)
@@ -42,12 +39,11 @@ namespace ProjectJumaiAuth.Services
             if (permission == null)
                 return (false, "Permiso no encontrado");
 
-            // El repositorio exige el tercer argumento (isGranted)
-            await userRepo.AssingPermissiontoUsuarioAsync(userId, dto.PermissionId, dto.IsGranted);
+            await userRepo.AssingPermissiontoUsuarioAsync(dto.PermissionId, userId, dto.IsGranted);
             return (true, null);
         }
 
-        // ---------- Permisos ----------
+
 
         public async Task<(bool Success, PermissionDto? Result, string? ErrorMessage)> CreatePermissionAsync(SavePermissionDto dto)
         {
@@ -65,7 +61,6 @@ namespace ProjectJumaiAuth.Services
             }, null);
         }
 
-        // Interfaz: hay que cambiarla a UpdatePermissionAsync(SavePermissionDto dto)
         public async Task<(bool Success, string? ErrorMessage)> UpdatePermissionAsync(SavePermissionDto dto)
         {
             if (!dto.Id.HasValue)
@@ -156,7 +151,7 @@ namespace ProjectJumaiAuth.Services
         }
 
         // Interfaz: hay que cambiarla a GetRoleByIdAsync(int roleId)
-        public async Task<RoleWithPermissionDto?> GetRoleByIdAsync(int roleId)
+        public async Task<RoleWithPermissionDto?> GetRoleByIdAsync(Guid roleId)
         {
             var role = await roleRepo.GetByIdWithPermissionsAsync(roleId);
             return role == null ? null : MapRole(role);
@@ -199,7 +194,7 @@ namespace ProjectJumaiAuth.Services
         }
 
         // Interfaz: GetUserPermissionAsync(int)
-        public async Task<UserPermissionDto?> GetUserPermissionAsync(int userId)
+        public async Task<UserPermissionDto?> GetUserPermissionAsync(string userId)
         {
             var user = await userRepo.GetUsuarioByIdWithPermissionAsync(userId);
             if (user == null)

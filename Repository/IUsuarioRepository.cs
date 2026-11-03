@@ -21,5 +21,6 @@ namespace ProjectJumaiAuth.Repositories
         Task<bool> RemovePermissionFromUsuarioAsync(int usuarioId, int permissionId);
         Task<bool> UpdateUsuarioRolAsync(int usuarioId, int roleId);
         Task<IReadOnlyList<Usuario>> GetAllUsuariosAsync();
+        Task AssingPermissiontoUsuarioAsync(int permissionId, string userId, bool isGranted);
     }
 }
