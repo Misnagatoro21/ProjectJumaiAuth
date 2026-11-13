@@ -1,0 +1,171 @@
+﻿@using ProjectJumaiAuth.DTOS
+@using ProjectJumaiAuth.Extensions
+
+@{
+    ViewData["Title"] = "Estudiantes";
+
+    var cursos = ViewBag.Cursos as IReadOnlyList<CursoTableDto> ?? [];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Estudiantes</h1>
+        <p class="text-muted mb-0">Gestión de datos con DataTable</p>
+    </div>
+
+    @if (User.TienePermiso("estudiante.crear"))
+    {
+        <button type="button" class="btn btn-success btn-sm" id="btnNuevoEstudiante">
+            <i class="fa-solid fa-plus me-1"></i>
+            Nuevo Estudiante
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="estudianteTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Email</th>
+                    <th>Curso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="estudianteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="estudianteModalTitle">
+                    Estudiante
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <form id="estudianteForm" novalidate>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="estudianteId" />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="estudianteNombre">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               id="estudianteNombre"
+                               name="estudianteNombre"
+                               class="form-control"
+                               maxlength="100" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="estudianteApellido">
+                            Apellido
+                        </label>
+
+                        <input type="text"
+                               id="estudianteApellido"
+                               name="estudianteApellido"
+                               class="form-control"
+                               maxlength="100" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="estudianteEmail">
+                            Email
+                        </label>
+
+                        <input type="email"
+                               id="estudianteEmail"
+                               name="estudianteEmail"
+                               class="form-control"
+                               maxlength="150" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="estudianteCursoId">
+                            Curso
+                        </label>
+
+                        <select id="estudianteCursoId"
+                                name="estudianteCursoId"
+                                class="form-select">
+
+                            <option value="">Seleccione un curso</option>
+
+                            @foreach (var curso in cursos)
+                            {
+                                <option value="@curso.Id">
+                                    @curso.Nombre
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            id="btnGuardarEstudiante">
+                        Guardar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+
+}
+
+@section Scripts {
+
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+
+    <script>
+        window.estudiantesConfig = {
+            canUpdate: @User.TienePermiso("estudiante.actualizar").ToString().ToLower(),
+            canDelete: @User.TienePermiso("estudiante.borrar").ToString().ToLower()
+                };
+    </script>
+
+    <script src="~/js/estudiante.js" asp-append-version="true"></script>
+
+}

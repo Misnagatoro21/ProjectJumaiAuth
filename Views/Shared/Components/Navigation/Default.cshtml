@@ -1,0 +1,27 @@
+﻿@model IReadOnlyList<string>
+
+@{
+    bool Has(string p) => Model.Any(x => string.Equals(x, p, StringComparison.OrdinalIgnoreCase));
+    bool HasAny(params string[] perms) => perms.Any(Has);
+}
+
+@if (Has("estudiante.ver"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Estudiantes" asp-action="Index">Estudiantes</a>
+    </li>
+}
+@if (HasAny("curso.ver", "curso.crear", "curso.actualizar", "curso.borrar"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Cursos" asp-action="Index">Cursos</a>
+    </li>
+}
+@if (HasAny("rol.ver", "permiso.ver", "usuario.ver"))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">
+            <i class="fa-solid fa-shield-halved me-1"></i> Administración
+        </a>
+    </li>
+}

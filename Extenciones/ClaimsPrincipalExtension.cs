@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace ProjectJumaiAuth.Extenciones
+namespace ProjectJumaiAuth.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
@@ -18,7 +18,7 @@ namespace ProjectJumaiAuth.Extenciones
             return permisos.Any(p => user.TienePermiso(p));
         }
 
-        public static IReadOnlyList<string> GetPermisos(this ClaimsPrincipal user)
+        public static IReadOnlyList<string> ObtenerPermisos(this ClaimsPrincipal user)
         {
             return user.Claims
                 .Where(c => c.Type == PermissionClaimType)

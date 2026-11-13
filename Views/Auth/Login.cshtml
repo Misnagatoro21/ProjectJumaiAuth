@@ -1,0 +1,139 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Autenticación</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="overlay">
+        <div class="popup-container">
+            <main>
+                <div class="form-container">
+
+                    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+                    <div id="loginForm" class="form active">
+                        <h1>Bienvenido</h1>
+                        <p class="subtitle">Inicia sesión para continuar</p>
+
+                        <form id="loginFormElement">
+                            <div class="input-group">
+                                <i class="fa-regular fa-envelope input-icon" aria-hidden="true"></i>
+                                <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+                            </div>
+
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                <input type="password" id="password" name="password" placeholder="Contraseña" required>
+                            </div>
+
+                            <div class="remember-forgot">
+                                <a href="#" class="forgot-link switch-form" data-form="forgotForm">¿Olvidaste tu contraseña?</a>
+                            </div>
+
+                            <button type="submit" class="signup-btn">Iniciar sesión</button>
+                            <p class="login-link">
+                                ¿No tienes cuenta? <a href="#" class="switch-form" data-form="registerForm">Regístrate</a>
+                            </p>
+                        </form>
+                    </div>
+
+                    <!-- FORMULARIO DE REGISTRO -->
+                    <div id="registerForm" class="form">
+                        <h1>Crear Cuenta</h1>
+                        <p class="subtitle">Regístrate para comenzar</p>
+
+                        <form id="registerFormElement">
+                            <div class="input-group">
+                                <i class="fa-regular fa-user input-icon" aria-hidden="true"></i>
+                                <input type="text" id="UserName" name="userName" placeholder="Nombre completo" required>
+                            </div>
+
+                            <div class="input-group">
+                                <i class="fa-regular fa-envelope input-icon" aria-hidden="true"></i>
+                                <input type="email" id="registerEmail" name="email" placeholder="Correo electrónico" required>
+                            </div>
+
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                <input type="password" id="registerPassword" name="password" placeholder="Crear contraseña" required>
+                            </div>
+
+                            <div class="input-group">
+                                <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirmar contraseña" required>
+                            </div>
+
+                            <button type="submit" class="signup-btn">Crear cuenta</button>
+
+                            <p class="login-link">
+                                ¿Ya tienes cuenta? <a href="#" class="switch-form" data-form="loginForm">Iniciar sesión</a>
+                            </p>
+                        </form>
+                    </div>
+
+                    <!-- FORMULARIO DE RECUPERACIÓN -->
+                    <div id="forgotForm" class="form">
+                        <h1>Restablecer Contraseña</h1>
+                        <p class="subtitle">Ingresa tu correo electrónico</p>
+
+                        <form id="resetPasswordForm">
+                            <div class="input-group">
+                                <i class="fa-regular fa-envelope input-icon" aria-hidden="true"></i>
+                                <input type="email" id="resetEmail" name="email" placeholder="Correo electrónico" required>
+                            </div>
+
+                            <button type="submit" class="signup-btn">Enviar enlace de recuperación</button>
+
+                            <p class="login-link">
+                                ¿Recuerdas tu contraseña? <a href="#" class="switch-form" data-form="loginForm">Inicia sesión</a>
+                            </p>
+                        </form>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/just-validate@4.2.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: @Html.Raw(Json.Serialize(TempData["Success"])),
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+        </script>
+    }
+    else if (TempData["Error"] != null)
+    {
+        <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: @Html.Raw(Json.Serialize(TempData["Error"])),
+                    toast: true,
+                    position: 'top-end',
+                    timer: 4000,
+                    showConfirmButton: false
+                });
+        </script>
+    }
+
+    <script src="~/js/login.js"></script>
+</body>
+</html>

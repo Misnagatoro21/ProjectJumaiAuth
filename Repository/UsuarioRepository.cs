@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectJumaiAuth.Data;
 using ProjectJumaiAuth.Models;
 using ProjectJumaiAuth.Repositories;
+using ProjectJumaiAuth.DTOS;
 
 namespace ProjectJumaiAuth.Repositories
 {

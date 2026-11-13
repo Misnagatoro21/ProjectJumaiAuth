@@ -7,7 +7,7 @@ namespace ProjectJumaiAuth.Repositories
     public interface IRoleRepository
     {
         Task<IReadOnlyList<Role>> GetAllWithPermissionsAsync();
-        Task<Role?> GetByIdWithPermissionsAsync(Guid id);
+        Task<Role?> GetByIdWithPermissionsAsync(int roleId);
         Task<Role?> GetByNameAsync(string name);
         Task<Role> CreateAsync(string name);
         Task<bool> AssingPermissionToRoleAsync(int roleId, int permissionId);

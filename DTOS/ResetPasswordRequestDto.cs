@@ -1,6 +1,6 @@
 ﻿namespace ProjectJumaiAuth.DTOS
 {
-    public class ResetPasswordDto
+    public class ResetPasswordRequestDto
     {
         public string Email { get; set; } = null!;
         public string Token { get; set; } = null!;

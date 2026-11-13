@@ -1,0 +1,157 @@
+﻿@model ProjectJumaiAuth.DTOS.RoleWithPermissionDto
+@{
+    ViewData["Title"] = $"Rol: {Model.Name}";
+    var allPermissions = ViewBag.AllPermission as IReadOnlyList<ProjectJumaiAuth.DTOS.PermissionDto> ?? [];
+    var assignedIds = Model.Permissions.Select(p => p.Id).ToHashSet();
+    var assigned = allPermissions.Where(p => assignedIds.Contains(p.Id)).ToList();
+    var available = allPermissions.Where(p => !assignedIds.Contains(p.Id)).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Rol: @Model.Name</h1>
+        <p class="text-muted mb-0">Asigna o quita permisos para este rol.</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver al panel</a>
+</div>
+
+<div class="row g-4">
+    <!-- Columna izquierda -->
+    <div class="col-lg-4">
+        <div class="card admin-card mb-3">
+            <div class="card-header bg-white fw-semibold">
+                <i class="fa-solid fa-plus me-1 text-success"></i>Agregar permisos al rol
+            </div>
+            <div class="card-body">
+                @if (available.Count == 0)
+                {
+                    <p class="text-muted mb-0">Este rol ya tiene todos los permisos.</p>
+                    <a asp-action="Permisos" class="btn btn-sm btn-outline-success mt-3">
+                        Crear nuevo permiso
+                    </a>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <label class="form-label">Permisos disponibles</label>
+                        <select id="permissionToAssign" class="form-select">
+                            @foreach (var permission in available)
+                            {
+                                <option value="@permission.Id">@permission.Name - @(permission.Description ?? "")</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="button"
+                            id="assignPermissionBtn"
+                            class="btn btn-success w-100"
+                            data-role-id="@Model.Id">
+                        <i class="fa-solid fa-plus me-1"></i> Asignar al rol
+                    </button>
+                }
+            </div>
+        </div>
+
+        <div class="card admin-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Asignados</span>
+                    <span class="badge bg-success">@assigned.Count</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Disponibles</span>
+                    <span class="badge bg-secondary">@available.Count</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna derecha -->
+    <div class="col-lg-8">
+        <div class="card admin-card mb-3">
+            <div class="card-header bg-white fw-semibold">
+                Permisos asignados (@assigned.Count)
+            </div>
+
+            @if (assigned.Count == 0)
+            {
+                <div class="card-body text-muted">
+                    Este rol no tiene permisos asignados. Usa el panel de la izquierda para asignar permisos.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Permiso</th>
+                                <th>Descripción</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in assigned)
+                            {
+                                <tr>
+                                    <td><code>@permission.Name</code></td>
+                                    <td>@(permission.Description ?? "-")</td>
+                                    <td class="text-end">
+                                        <button type="button"
+                                                class="btn btn-sm btn-danger btn-toggle-permission"
+                                                data-action="remove"
+                                                data-role-id="@Model.Id"
+                                                data-permission-id="@permission.Id">
+                                            <i class="fa-solid fa-minus me-1"></i> Quitar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        @if (available.Count > 0)
+        {
+            <div class="card admin-card">
+                <div class="card-header bg-white fw-semibold">
+                    Permisos disponibles (@available.Count)
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Permiso</th>
+                                <th>Descripción</th>
+                                <th class="text-end">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var permission in available)
+                            {
+                                <tr>
+                                    <td><code>@permission.Name</code></td>
+                                    <td>@(permission.Description ?? "-")</td>
+                                    <td class="text-end">
+                                        <button type="button"
+                                                class="btn btn-sm btn-success btn-toggle-permission"
+                                                data-action="assign"
+                                                data-role-id="@Model.Id"
+                                                data-permission-id="@permission.Id">
+                                            <i class="fa-solid fa-plus me-1"></i> Asignar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+}

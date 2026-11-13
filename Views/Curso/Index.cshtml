@@ -1,0 +1,149 @@
+﻿@using ProjectJumaiAuth.DTOS
+@using ProjectJumaiAuth.Extensions
+
+@{
+    ViewData["Title"] = "Curso";
+
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">Cursos</h1>
+        <p class="text-muted mb-0">Gestión de datos con DataTable</p>
+    </div>
+
+    @if (User.TienePermiso("curso.crear"))
+    {
+        <button type="button" class="btn btn-success btn-sm" id="btnNuevoCurso">
+            <i class="fa-solid fa-plus me-1"></i>
+            Nuevo Curso
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="cursoTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Estudiantes</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="cursoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="cursoModalTitle">
+                    Curso
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <form id="cursoForm" novalidate>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="cursoId" />
+
+                    <div class="mb-3">
+                        <label class="form-label" for="cursoNombre">
+                            Nombre
+                        </label>
+
+                        <input type="text"
+                               id="cursoNombre"
+                               name="cursoNombre"
+                               class="form-control"
+                               maxlength="100" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="cursoDescripcion">
+                            Descripción
+                        </label>
+
+                        <input type="text"
+                               id="cursoDescripcion"
+                               name="cursoDescripcion"
+                               class="form-control"
+                               maxlength="100" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="cursoEmail">
+                            Email
+                        </label>
+
+                        <input type="email"
+                               id="cursoEmail"
+                               name="cursoEmail"
+                               class="form-control"
+                               maxlength="150" />
+                    </div>
+       
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            id="btnGuardarCurso">
+                        Guardar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+
+    <link rel="stylesheet"
+          href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+
+}
+
+@section Scripts {
+
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+
+    <script>
+        window.cursosConfig = {
+            canUpdate: @User.TienePermiso("curso.actualizar").ToString().ToLower(),
+            canDelete: @User.TienePermiso("curso.borrar").ToString().ToLower()
+                };
+    </script>
+
+    <script src="~/js/curso.js" asp-append-version="true"></script>
+
+}

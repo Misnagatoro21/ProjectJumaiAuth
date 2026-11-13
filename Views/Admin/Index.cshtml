@@ -1,0 +1,110 @@
+﻿@using ProjectJumaiAuth.Extensions
+@{
+	ViewData["Title"] = "Panel Administración";
+    var permissions = ViewBag.Permissions as IReadOnlyList<string> ?? [];
+}
+
+<div class="admin-header mb-4">
+    <h1 class="h3 mb-1">
+        <i class="fa-solid fa-shield-halved me-2"></i>
+        Panel Administración
+    </h1>
+    <p class="text-muted mb-0">Los permisos son individuales.</p>
+</div>
+
+<div class="row g-4 mb-4">
+
+    @if (User.TienePermiso("rol.ver"))
+    {
+        <div class="col-md-4">
+            <div class="card admin-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-user-tag me-2 text-primary"></i>
+                        Roles
+                    </h5>
+
+                    <p class="card-text text-muted">
+                        Ver, crear roles y asignar permisos.
+                    </p>
+
+                    <a asp-action="Roles" class="btn btn-primary btn-sm">
+                        Gestionar roles
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.TienePermiso("permiso.ver"))
+    {
+        <div class="col-md-4">
+            <div class="card admin-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-key me-2 text-success"></i>
+                        Permisos
+                    </h5>
+
+                    <p class="card-text text-muted">
+                        Crear permisos como <code>estudiante.crear</code>.
+                    </p>
+
+                    <a asp-action="Permissions" class="btn btn-success btn-sm">
+                        Gestionar permisos
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (User.TienePermiso("usuario.ver"))
+    {
+        <div class="col-md-4">
+            <div class="card admin-card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-users me-2 text-primary"></i>
+                        Usuarios
+                    </h5>
+
+                    <p class="card-text text-muted">
+                        Asignar permisos directos a usuarios.
+                    </p>
+
+                    <a asp-action="Users" class="btn btn-primary btn-sm">
+                        Gestionar usuarios
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+
+        <h5 class="card-title mb-3">Mis permisos</h5>
+
+        @if (permissions.Count == 0)
+        {
+            <p class="text-muted mb-0">
+                No tienes permisos en tu token.
+                Inicia sesión nuevamente si acabas de recibir nuevos permisos.
+            </p>
+        }
+        else
+        {
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var permission in permissions)
+                {
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+                        @permission
+                    </span>
+                }
+            </div>
+        }
+
+    </div>
+</div>

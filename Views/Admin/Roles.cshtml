@@ -1,0 +1,84 @@
+﻿@using ProjectJumaiAuth.Extensions
+@model IReadOnlyList<ProjectJumaiAuth.DTOS.RoleWithPermissionDto>
+
+@{
+	ViewData["Title"] = "Roles";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+	<div>
+		<h1 class="h3 mb-1">Roles</h1>
+		<p class="text-muted mb-0">Crea roles y configura sus permisos.</p>
+	</div>
+	<a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver al panel</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+	<div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (ViewBag.CreateError != null)
+{
+	<div class="alert alert-danger">@ViewBag.CreateError</div>
+}
+
+<div class="row g-4">
+	@if (User.TienePermiso("rol.crear"))
+	{
+        <div class="col-lg-4">
+            <div class="card admin-card">
+                <div class="card-header bg-white fw-semibold">Nuevo rol</div>
+                <div class="card-body">
+                    <form asp-action="CreateRol" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del rol</label>
+                            <input name="Name" class="form-control" placeholder="Ej: Editor" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-plus me-1"></i>
+                            Crear rol
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="@(User.TienePermiso("rol.crear") ? "col-lg-8" : "col-12")">
+        <div class="card admin-card">
+            <div class="card-header bg-white fw-semibold">Roles registrados (@Model.Count)</div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Permisos</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var role in Model)
+                        {
+                            <tr>
+                                <td>@role.Id</td>
+                                <td>@role.Name</td>
+                                <td><span class="badge bg-secondary">@role.Permissions.Count permisos</span></td>
+                                <td class="text-end">
+                                    @if (User.TienePermiso("rol.asignar"))
+                                    {
+                                        <a asp-action="RoleDetails" asp-route-id="@role.Id" class="btn btn-sm btn-outline-primary">
+                                            Configurar
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

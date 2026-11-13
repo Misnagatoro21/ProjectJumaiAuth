@@ -39,12 +39,12 @@ namespace ProjectJumaiAuth.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Role?> GetByIdWithPermissionsAsync(int id)
+        public async Task<Role?> GetByIdWithPermissionsAsync(int roleId)
         {
             return await context.Roles
               .Include(r => r.RolePermisos)
               .ThenInclude(rp => rp.Permiso)
-              .FirstOrDefaultAsync(r => r.Id == id);
+              .FirstOrDefaultAsync(r => r.Id == roleId);
         }
 
         public Task<Role?> GetByIdWithPermissionsAsync(Guid id)

@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ProjectJumaiAuth.Extenciones;
+using ProjectJumaiAuth.Extensions;
 using ProjectJumaiAuth.Mejoras;
 using ProjectJumaiAuth.Models;
 using ProjectJumaiAuth.Models.Settings;
@@ -27,8 +27,9 @@ namespace ProjectJumaiAuth.Services
             };
             foreach (var permission in EffectivePermission.FromUser(usuario))
             {
-                claims.Add(new Claim(ClaimsPrincipalExtensions.PermissionClaimType, permission));
-            }
+                claims.Add(new Claim("permission", permission));
+            
+        }
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

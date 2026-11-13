@@ -9,6 +9,5 @@
         public string RoleName { get; set; } = string.Empty;
         public List<string> EffectivePermission { get; set; } = [];
         public List<UserPermissionOverrideDto> DirectPermission { get; set; } = [];
-    
-}
+    }
 }
