@@ -10,12 +10,12 @@ namespace ProjectJumaiAuth.Repositories
     public class UsuarioRepository(AppDbContext context) : IUsuarioRepository
     {
         private IQueryable<Usuario> UserWithPermission =>
-        context.Usuarios
+    context.Usuarios
         .Include(u => u.Rol)
-        .ThenInclude(r => r.RolePermisos)
-        .ThenInclude(rp => rp.Permiso)
-        .ThenInclude(up => up.UsuarioPermisos)
-        .ThenInclude(up => up.Permiso);
+            .ThenInclude(r => r.RolePermisos)
+                .ThenInclude(rp => rp.Permiso)
+        .Include(u => u.UsuarioPermisos)
+            .ThenInclude(up => up.Permiso);
 
         public async Task<bool> AssingPermissiontoUsuarioAsync(int usuarioId, int permissionId, bool isGranted)
         {
@@ -65,11 +65,11 @@ namespace ProjectJumaiAuth.Repositories
             return await UserWithPermission.FirstOrDefaultAsync(u => u.Id == Id);
         }
 
-        public async Task<Usuario?> GetUsuarioByEmail(string Email)
+        public async Task<Usuario?> GetUsuarioByEmail(string email)
         {
-            return await UserWithPermission.FirstOrDefaultAsync(u => u.Email == Email);
+            return await UserWithPermission.AsSplitQuery()
+                .FirstOrDefaultAsync(u => u.Email == email);
         }
-
 
         public async Task<Usuario?> GetUsuarioByRefreshTokenAsync(string refreshToken)
         {
@@ -113,12 +113,6 @@ namespace ProjectJumaiAuth.Repositories
         public bool ValidatePassword(Usuario usuario, string password)
         {
             return BCrypt.Net.BCrypt.EnhancedVerify(password, usuario.PasswordHash);
-        }
-
-
-        public Task<Usuario?> GetUsuarioByIdWithPermissionAsync(string email)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -46,7 +46,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 // ==================== DBContext ====================
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectJumaiAuth")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSession(options =>
 {
@@ -127,6 +127,14 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+// ==================== Migraciones y seed ====================
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+    await DbSeeder.SeedAsync(context);
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -135,21 +143,9 @@ else
 {
     app.UseHsts();
 }
+app.UseStatusCodePagesWithReExecute("/Home/NotFoundPage");
 
 app.UseHttpsRedirection();
-
-app.UseStatusCodePages(async context =>
-{
-    var response = context.HttpContext.Response;
-
-    if (response.StatusCode == 404 && !response.HasStarted)
-    {
-        response.Redirect("/Home/NotFoundPage");
-    }
-
-    await Task.CompletedTask;
-});
-
 app.UseRouting();
 app.UseSession();
 app.UseMiddleware<JwtRefreshMiddleware>();

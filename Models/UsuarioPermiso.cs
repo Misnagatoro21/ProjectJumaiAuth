@@ -1,6 +1,4 @@
-﻿using ProjectJumaiAuth.Models;
-
-namespace ProjectJumaiAuth.Models
+﻿namespace ProjectJumaiAuth.Models
 {
     public class UsuarioPermiso
     {

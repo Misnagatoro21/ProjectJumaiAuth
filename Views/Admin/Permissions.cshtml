@@ -9,7 +9,7 @@
         <p class="text-muted mb-0">Crea permisos y se usa en roles y permisos</p>
     </div>
     <div class="d-flex gap-2">
-        @if (User.TienePermiso("permiso.crear"))
+        @if (User.TieneAlgunPermiso("permiso.crear"))
         {
             <button type="button" class="btn btn-success btn-sm" id="btnNuevoPermiso">
                 <i class="fa-solid fa-plus me-1"></i>

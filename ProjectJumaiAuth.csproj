@@ -11,16 +11,14 @@
 
   <ItemGroup>
     <Content Remove="Views\Admin\UserPermission.cshtml" />
-    <Content Remove="Views\Shared\Components\ValidationScriptPartial.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\Admin\UserPermission.cshtml" />
-    <None Include="Views\Shared\Components\ValidationScriptPartial.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="16.2.0" />
+    <PackageReference Include="AutoMapper" Version="17.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.21" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
